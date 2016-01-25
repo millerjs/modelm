@@ -1,0 +1,22 @@
+os:
+  - osx
+sudo: false
+language: rust
+rust:
+  - nightly
+  - beta
+  - stable
+before_install:
+  - brew update
+  - brew install openal-soft libsndfile
+before_script:
+  - |
+    pip install 'travis-cargo<0.2' --user &&
+    export PATH=$HOME/.local/bin:$PATH
+script:
+  - |
+    cargo build &&
+    cargo test
+    make -C clap-tests test &&
+    travis-cargo --only stable
+    travis-cargo --only nightly

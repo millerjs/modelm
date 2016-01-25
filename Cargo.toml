@@ -1,0 +1,10 @@
+[package]
+name = "modelm"
+version = "0.1.0"
+authors = ["Joshua Miller <jsmiller@uchicago.edu>"]
+
+[dependencies]
+rand = "0.3"
+clap = "1.5.5"
+libc = "0.1"
+ears = { git = "https://github.com/jhasse/ears" }
