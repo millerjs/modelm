@@ -13,15 +13,32 @@ A OSX **Mechanical keyboard audio simulator** for your Mac keyboard written in [
 
 ## Usage
 
+Install OpenAL audio dependency.
+```
+brew install openal-soft libsndfile
+```
+
 Install [Rust](https://github.com/rust-lang/rustup) and [Cargo](https://crates.io/).
 
 ```
 git clone git@github.com:millerjs/modelm.git
 cd modelm
+cargo build
+```
+
+And run:
+```
 sudo cargo run
 ```
 
-To change the volume (e.g. cut in half)
+### Options
+
+To change the volume (e.g. cut in half):
 ```
 sudo cargo run -- -v 0.5
+```
+
+To specify custom clickity clacks:
+```
+sudo cargo run -- -c path/to/clacks
 ```
