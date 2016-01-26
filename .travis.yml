@@ -15,8 +15,7 @@ before_script:
     export PATH=$HOME/.local/bin:$PATH
 script:
   - |
-    cargo build &&
+    cargo build
     cargo test
-    make -C clap-tests test &&
     travis-cargo --only stable
     travis-cargo --only nightly
