@@ -60,3 +60,7 @@ To specify custom clickity clacks:
 ```
 sudo cargo run -- -c path/to/clacks
 ```
+
+### Credits
+
+Currently ships with IBM sounds from https://webwit.nl/input/kbsim/
