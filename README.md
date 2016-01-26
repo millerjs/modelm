@@ -13,7 +13,20 @@ To provide audible feedback for your keystrokes, `modelm` hooks into OSX Quartz 
 * **Positonal sounds** - Keys on the left sound like keys on the left. Keys on the right sound like Keys on the right.
 * **Dynamic resource loading** - You can pick your favorite clickity-clacks.  Just point `modelm` to a directory with sound bites.
 
-## Usage
+
+## Installation
+
+
+### Running a pre-compiled binary
+
+To run the compile binary, download the tar [here](https://github.com/millerjs/modelm/releases/download/0.1.0/modelm_v0.1.0_OSX.tar.gz), 
+```
+gunzip modelm_v0.1.0_OSX.tar.gz
+cd modelm_v0.1.0
+sudo ./modelm
+```
+
+### Installation from source
 
 Install OpenAL audio dependency.
 ```
@@ -28,6 +41,7 @@ cd modelm
 cargo build
 ```
 
+## Usage
 And run:
 ```
 sudo cargo run
