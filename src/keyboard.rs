@@ -34,6 +34,7 @@ use ffi::register_event_tap;
 #[repr(C)]
 pub struct Keyboard {
     sounds: Vec<Sound>,
+    x_scale: f32,
 }
 
 
@@ -53,6 +54,7 @@ impl Keyboard {
         }
 
         Keyboard {
+            x_scale: 1.0,
             sounds: sounds,
         }
     }
@@ -64,6 +66,21 @@ impl Keyboard {
         for sound in self.sounds.iter_mut() {
             sound.set_volume(volume);
         }
+        self
+    }
+
+    /// Set the pan amount for the positional sound of clicks.
+    ///
+    /// A decimal (default: 1.0).  The larger the value, the further
+    /// apart the clicks will sound. A value of 0 turns off positional
+    /// sound. A value < 0 reverses the directionality.
+    ///
+    /// # Argument
+    /// `x_scale` - Amount to scale sounds left and right.
+    ///
+    /// Scale should be a decimal.
+    pub fn set_x_scale(mut self, x_scale: f32) -> Keyboard {
+        self.x_scale = x_scale;
         self
     }
 
@@ -136,7 +153,7 @@ impl Keyboard {
 
         loop {
             let event = rx.recv().unwrap();
-            let position = (25.0 - event.code as f32) / - 100.0;
+            let position = - (25.0 - event.code as f32) * self.x_scale / 2000.0;
             match event.etype {
                 EventType::KeyDown => {
                     if !keys_down.contains(&event.code){

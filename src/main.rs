@@ -1,10 +1,9 @@
-//! Small OSX commandline app that Keyboard uses your keyboard to
-//! emulate a mechanical keyboard.
+//! Small OSX commandline app that uses your keyboard to
+//! emulate mechanical keyboard audio.
 
 extern crate modelm;
 extern crate ears;
 extern crate clap;
-
 
 use modelm::keyboard::Keyboard;
 
@@ -30,6 +29,14 @@ fn main() -> () {
              .long("click-directory")
              .help("Specify the directory to load click sounds from")
              .takes_value(true))
+        .arg(Arg::with_name("XSCALE")
+             .short("x")
+             .long("x-scale")
+             .help("Specify the pan amount for the positional sound of clicks. \
+                    A decimal (default: 1.0).  The larger the value, the further \
+                    apart the clicks will sound. A value of 0 turns off positional \
+                    sound. A value < 0 reverses the directionality.")
+             .takes_value(true))
         .get_matches();
 
     // Parse the click directory
@@ -41,5 +48,14 @@ fn main() -> () {
         Err(_) => panic!("Volume must be a decimal between 0 and 1."),
     };
 
-    Keyboard::new(dir).set_volume(volume).listen();
+    // Parse the volume
+    let x_scale = match matches.value_of("XSCALE").unwrap_or("1.0").parse::<f32>() {
+        Ok(v) => v,
+        Err(_) => panic!("x-scale must be a decimal. (default: 1.0)"),
+    };
+
+    Keyboard::new(dir)
+        .set_volume(volume)
+        .set_x_scale(x_scale)
+        .listen();
 }
