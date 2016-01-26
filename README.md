@@ -3,13 +3,15 @@
 
 A OSX **Mechanical keyboard audio simulator** for your Mac keyboard written in [Rust](https://www.rust-lang.org/). 
 
-> Get yourself clickity-clacking.
+> *Get yourself clickity-clacking.*
+
+Inspired by the [IBM Model M Keyboard](https://en.wikipedia.org/wiki/Model_M_keyboard) and a disproportionate love of clicky keyboards over non clicky keyboards, this is a simple program to simulate the Model M by providing audible keystroke feedback.
 
 ## Features
-`modelm` hooks into OSX Quartz Events to provide audible feedback for your kestrokes.
+To provide audible feedback for your keystrokes, `modelm` hooks into OSX Quartz Events and must be run as `root`. 
 
 * **Positonal sounds** - Keys on the left sound like keys on the left. Keys on the right sound like Keys on the right.
-* **Dynamix resource loading** - You can pick your favorite clickity-clacks.  Just point `modelm` to a directory with sound bites.
+* **Dynamic resource loading** - You can pick your favorite clickity-clacks.  Just point `modelm` to a directory with sound bites.
 
 ## Usage
 
