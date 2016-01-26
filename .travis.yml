@@ -17,5 +17,3 @@ script:
   - |
     cargo build
     cargo test
-    travis-cargo --only stable
-    travis-cargo --only nightly
