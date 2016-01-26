@@ -1,4 +1,5 @@
-# modelm
+# modelm 
+[![Build Status](https://travis-ci.org/millerjs/modelm.svg?branch=master)](https://travis-ci.org/millerjs/modelm)
 
 A OSX **Mechanical keyboard audio simulator** for your Mac keyboard written in [Rust](https://www.rust-lang.org/). 
 
