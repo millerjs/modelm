@@ -21,7 +21,7 @@ To provide audible feedback for your keystrokes, `modelm` hooks into OSX Quartz 
 
 To run the compile binary, download the tar [here](https://github.com/millerjs/modelm/releases/download/0.1.0/modelm_v0.1.0_OSX.tar.gz), 
 ```
-gunzip modelm_v0.1.0_OSX.tar.gz
+tar -zxf modelm_v0.1.0_OSX.tar.gz
 cd modelm_v0.1.0
 sudo ./modelm
 ```
