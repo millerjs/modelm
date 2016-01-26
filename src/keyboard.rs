@@ -21,6 +21,7 @@ use rand::distributions::Range;
 use ears::Sound;
 use ears::AudioController;
 
+use std::collections::HashSet;
 use std::fs::read_dir;
 use std::thread;
 use std::sync::mpsc::channel;
@@ -124,6 +125,8 @@ impl Keyboard {
     /// Keyboard::new("resources");
     /// ```
     pub fn listen(&mut self) {
+        let mut keys_down = HashSet::new();
+
         let (tx, rx) = channel();
         thread::spawn(move || {
             register_event_tap(&tx);
@@ -135,7 +138,15 @@ impl Keyboard {
             let event = rx.recv().unwrap();
             let position = (25.0 - event.code as f32) / - 100.0;
             match event.etype {
-                EventType::KeyUp => self.click_pos([position, 0.0, 1.0]),
+                EventType::KeyDown => {
+                    if !keys_down.contains(&event.code){
+                        self.click_pos([position, 0.0, 1.0])
+                    }
+                    keys_down.insert(event.code);
+                },
+                EventType::KeyUp => {
+                    keys_down.remove(&event.code);
+                },
                 _ => ()
             }
         }
