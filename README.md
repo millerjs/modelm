@@ -14,6 +14,13 @@ To provide audible feedback for your keystrokes, `modelm` hooks into OSX Quartz 
 * **Dynamic resource loading** - You can pick your favorite clickity-clacks.  Just point `modelm` to a directory with sound bites.
 
 
+## Requirements
+
+Install OpenAL audio dependency.
+```
+brew install openal-soft libsndfile
+```
+
 ## Installation
 
 
@@ -27,11 +34,6 @@ sudo ./modelm
 ```
 
 ### Installation from source
-
-Install OpenAL audio dependency.
-```
-brew install openal-soft libsndfile
-```
 
 Install [Rust](https://github.com/rust-lang/rustup) and [Cargo](https://crates.io/).
 
