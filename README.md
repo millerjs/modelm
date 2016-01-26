@@ -10,7 +10,7 @@ Inspired by the [IBM Model M Keyboard](https://en.wikipedia.org/wiki/Model_M_key
 ## Features
 To provide audible feedback for your keystrokes, `modelm` hooks into OSX Quartz Events and must be run as `root`. 
 
-* **Positonal sounds** - Keys on the left sound like keys on the left. Keys on the right sound like Keys on the right.
+* **Positional sounds** - Keys on the left sound like keys on the left. Keys on the right sound like Keys on the right.
 * **Dynamic resource loading** - You can pick your favorite clickity-clacks.  Just point `modelm` to a directory with sound bites.
 
 
