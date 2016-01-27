@@ -153,7 +153,7 @@ impl Keyboard {
 
         loop {
             let event = rx.recv().unwrap();
-            let position = - (25.0 - event.code as f32) * self.x_scale / 2000.0;
+            let position = - (25.0 - event.code as f32) * self.x_scale / 1500.0;
             match event.etype {
                 EventType::KeyDown => {
                     if !keys_down.contains(&event.code){

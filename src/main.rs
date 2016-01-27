@@ -48,7 +48,7 @@ fn main() -> () {
         Err(_) => panic!("Volume must be a decimal between 0 and 1."),
     };
 
-    // Parse the volume
+    // Parse the x-scale
     let x_scale = match matches.value_of("XSCALE").unwrap_or("1.0").parse::<f32>() {
         Ok(v) => v,
         Err(_) => panic!("x-scale must be a decimal. (default: 1.0)"),
