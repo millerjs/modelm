@@ -1,4 +1,4 @@
-]# modelm
+# modelm
 [![Build Status](https://travis-ci.org/millerjs/modelm.svg?branch=master)](https://travis-ci.org/millerjs/modelm)
 
 A OSX **Mechanical keyboard audio simulator** for your Mac keyboard written in [Rust](https://www.rust-lang.org/).
@@ -72,7 +72,7 @@ OPTIONS:
 
 ### Installation from source
 
-Install [Rust](https://github.com/rust-lang/rustup) and [Cargo](https://crates.io/). And
+First, install [Rust](https://github.com/rust-lang/rustup) and [Cargo](https://crates.io/).
 
 ```
 git clone git@github.com:millerjs/modelm.git
