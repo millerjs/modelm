@@ -16,7 +16,7 @@ fn main() -> () {
     ears::init();
 
     let matches = App::new("modelm")
-        .version("0.1.0")
+        .version("0.2.0")
         .author("Joshua Miller <jsmiller@uchicago.edu>")
         .about("Turns your computer into a mechanical keyboard emulator!")
         .arg(Arg::with_name("VOLUME")
@@ -48,7 +48,7 @@ fn main() -> () {
         Err(_) => panic!("Volume must be a decimal between 0 and 1."),
     };
 
-    // Parse the x-scale
+    // Parse the
     let x_scale = match matches.value_of("XSCALE").unwrap_or("1.0").parse::<f32>() {
         Ok(v) => v,
         Err(_) => panic!("x-scale must be a decimal. (default: 1.0)"),
