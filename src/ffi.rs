@@ -165,7 +165,8 @@ pub mod ext_quartz {
 ///  to which the event tap is added as a source.
 #[no_mangle]
 #[allow(unused_variables)]
-pub extern fn callback(proxy: Pointer, etype: CGEventMask, event: CGEventRef, channel: &Sender<KeyEvent>) -> CGEventRef {
+pub extern fn callback(proxy: Pointer, etype: CGEventMask, event: CGEventRef, channel: &Sender<KeyEvent>)
+                       -> CGEventRef {
     unsafe {
         let keyCode = ext_quartz::CGEventGetIntegerValueField(event, kCGKeyboardEventKeycode);
         let _ = channel.send(KeyEvent {
@@ -173,7 +174,10 @@ pub extern fn callback(proxy: Pointer, etype: CGEventMask, event: CGEventRef, ch
                 kCGEventKeyDown => EventType::KeyDown,
                 kCGEventKeyUp => EventType::KeyUp,
                 kCGEventFlagsChanged => EventType::FlagsChanged,
-                _ => unreachable!(),
+                _ => {
+                    error!("Received unknown EventType: {:}", etype);
+                    return event;
+                },
             },
             code: keyCode,
         });
