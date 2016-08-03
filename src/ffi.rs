@@ -5,6 +5,7 @@
 
 use libc;
 use std::sync::mpsc::Sender;
+pub type KeyCode = u16;
 
 #[derive(Debug)]
 #[repr(C)]
@@ -18,7 +19,7 @@ pub enum EventType {
 #[repr(C)]
 pub struct KeyEvent {
     pub etype: EventType,
-    pub code: u16,
+    pub code: KeyCode,
 }
 
 // Opaque Pointer Types
@@ -169,7 +170,7 @@ pub extern fn callback(proxy: Pointer, etype: CGEventMask, event: CGEventRef, ch
                        -> CGEventRef {
     unsafe {
         let keyCode = ext_quartz::CGEventGetIntegerValueField(event, kCGKeyboardEventKeycode);
-        let _ = channel.send(KeyEvent {
+        let event = KeyEvent {
             etype: match etype as u32 {
                 kCGEventKeyDown => EventType::KeyDown,
                 kCGEventKeyUp => EventType::KeyUp,
@@ -180,7 +181,9 @@ pub extern fn callback(proxy: Pointer, etype: CGEventMask, event: CGEventRef, ch
                 },
             },
             code: keyCode,
-        });
+        };
+        debug!("Received event: {:?}", event);
+        let _ = channel.send(event);
     }
     event
 }
@@ -217,7 +220,7 @@ pub fn register_event_tap(tx: &Sender<KeyEvent>) {
         );
         assert!(!event_tap.is_null(),
                 "Unable to create event tap. Please make sure you have the correct permissions");
-        println!("Created event tap...");
+        info!("Created event tap...");
 
         let allocator = ext_quartz::kCFAllocatorDefault;
         let current_event_loop = ext_quartz::CFRunLoopGetCurrent();

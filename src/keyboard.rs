@@ -12,60 +12,108 @@
 //! Keyboard::new("resources/modelm").listen();
 //! ```
 
-extern crate ears;
-extern crate rand;
-
-use rand::distributions::IndependentSample;
-use rand::distributions::Range;
-
-use ears::Sound;
-use ears::AudioController;
-
+use ::DEFAULT_SOUND_FILE_REGEX;
+use ffi::CFRunLoopRun;
+use ffi::register_event_tap;
+use ffi::{EventType, KeyCode, KeyEvent};
+use regex::Regex;
 use std::collections::HashSet;
 use std::fs::read_dir;
-use std::thread;
 use std::sync::mpsc::channel;
+use std::thread;
+use switch::Switch;
+use yaml_rust;
+use yaml_rust::Yaml;
+use ::errors::KeyboardError;
 
-use ffi::CFRunLoopRun;
-use ffi::EventType;
-use ffi::register_event_tap;
-
-/// A composable Keyboard representation
+/// Keyboard representation
 #[repr(C)]
 pub struct Keyboard {
-    sounds: Vec<Sound>,
-    x_scale: f32,
+    switches: Vec<Switch>,
+    sound_file_regex: Regex,
+    keys_down: HashSet<KeyCode>,
+    options: KeyboardOptions,
 }
 
 
+pub struct KeyboardOptions {
+    x_scale: f32,
+    volume: f32,
+}
+
+
+impl KeyboardOptions {
+    pub fn default() -> Self
+    {
+        KeyboardOptions {
+            x_scale: 1.0,
+            volume: 1.0,
+        }
+    }
+}
+
 impl Keyboard {
 
-    /// Default constructor for ClickHandler
+    /// Default constructor for Keyboard
     ///
-    /// Create a new struct and associate a path to it.
-    pub fn new(path: &str) -> Keyboard {
-        let mut sounds = vec![];
-
-        for path in read_dir(path).unwrap() {
-            let p = path.unwrap().path().to_str().unwrap().to_string();
-            let mut sound = Keyboard::load_sound(p);
-            sound.set_relative(true);
-            sounds.push(sound);
-        }
-
+    /// Create a new Keyboard with default members
+    pub fn new() -> Keyboard
+    {
         Keyboard {
-            x_scale: 1.0,
-            sounds: sounds,
+            keys_down: HashSet::new(),
+            options: KeyboardOptions::default(),
+            switches: vec![],
+            sound_file_regex: Regex::new(DEFAULT_SOUND_FILE_REGEX).unwrap(),
         }
+    }
+
+    pub fn load_config_yaml(mut self, config: &str) -> Result<Keyboard, KeyboardError>
+    {
+        let parsed = try!(yaml_rust::YamlLoader::load_from_str(config));
+        let yaml = &parsed[0];
+
+        let switches = try_yaml!(yaml["switches"], Yaml::Array,
+                                 "config must have Array [switches]");
+
+        for switch_config in switches {
+            self.switches.push(try!(Switch::from_yaml(&switch_config)));
+        }
+
+        Ok(self)
+    }
+
+    /// Adds a handler using all the sounds in the given directory
+    ///
+    /// # Argument
+    /// `directory` - Path to read sound files from
+    pub fn add_default_handler(mut self, directory: &str) -> Result<Keyboard, KeyboardError>
+    {
+        let mut switch = Switch::new();
+        for path in read_dir(directory).unwrap() {
+            let path = path.unwrap().path();
+            if self.sound_file_regex.is_match(path.to_str().unwrap()) {
+                switch = try!(switch.load_sound_keydown(&path));
+            }
+        }
+        self.switches.push(switch);
+        Ok(self)
+    }
+
+    /// Adds a user created handler
+    ///
+    /// # Argument
+    /// `switch` - the Switch object to add
+    pub fn switch(mut self, switch: Switch) -> Keyboard
+    {
+        self.switches.push(switch);
+        self
     }
 
     /// Sets the volume of the keyboard.
     ///
     /// Volume should be a decimal between 0 and 1
     pub fn set_volume(mut self, volume: f32) -> Keyboard {
-        for sound in self.sounds.iter_mut() {
-            sound.set_volume(volume);
-        }
+        self.options.volume = volume;
         self
     }
 
@@ -80,55 +128,8 @@ impl Keyboard {
     ///
     /// Scale should be a decimal.
     pub fn set_x_scale(mut self, x_scale: f32) -> Keyboard {
-        self.x_scale = x_scale;
+        self.options.x_scale = x_scale;
         self
-    }
-
-    /// Play a random key sound
-    ///
-    /// # Example
-    /// ```ignore
-    /// Keyboard::new("resources/modelm").click();
-    /// ```
-    pub fn click(&mut self) {
-        let range = Range::new(0, self.sounds.len());
-        let idx = range.ind_sample(&mut rand::thread_rng());
-        let sound = &mut self.sounds[idx];
-        sound.set_position([0.0, 0.0, 1.0]);
-        sound.play();
-    }
-
-    /// Play a random key sound from position in 3D space.
-    ///
-    /// # Example
-    /// ```ignore
-    /// Keyboard::new("resources/modelm").click_pos([1.0, 0.0, 0.0]);
-    /// ```
-    pub fn click_pos(&mut self, position: [f32; 3]) {
-        let range = Range::new(0, self.sounds.len());
-        let idx = range.ind_sample(&mut rand::thread_rng());
-        let sound = &mut self.sounds[idx];
-        sound.set_position(position);
-        sound.play();
-    }
-
-    /// Wraps around Sound::new()
-    ///
-    /// Load the sound located at the provided path.
-    ///
-    /// # Argument
-    /// `path` - The path the the sound file
-    ///
-    /// # Return
-    /// A Sound, panic if the sound file could not be read.
-    ///
-    /// # Example
-    /// ```ignore
-    /// use modelm::keyboard::Keyboard;
-    /// let sound = Keyboard::load_sound("resources/modelm/1_.wav".to_string());
-    /// ```
-    fn load_sound(path: String) -> Sound {
-        Sound::new(&*path).expect(&*format!("Could not load {:}.", path))
     }
 
     /// Listener to play sound.
@@ -142,31 +143,65 @@ impl Keyboard {
     /// Keyboard::new("resources");
     /// ```
     pub fn listen(&mut self) {
-        let mut keys_down = HashSet::new();
-
         let (tx, rx) = channel();
         thread::spawn(move || {
             register_event_tap(&tx);
-            println!("Running event listener...\nPress ^C to exit.");
+            info!("Running event listener...");
+            info!("Press ^C to exit.");
             CFRunLoopRun();
         });
 
         loop {
             let event = rx.recv().unwrap();
-            let position = - (25.0 - event.code as f32) * self.x_scale / 1500.0;
-            match event.etype {
-                EventType::KeyDown => {
-                    if !keys_down.contains(&event.code){
-                        self.click_pos([position, 0.0, 1.0])
-                    }
-                    keys_down.insert(event.code);
-                },
-                EventType::KeyUp => {
-                    keys_down.remove(&event.code);
-                },
-                _ => ()
+            self.handle_event(event);
+        }
+    }
+
+    /// Returns the index of the handler for a KeyCode
+    ///
+    /// # Argument
+    /// `code` - The key code  of the event
+    fn get_switch_index(&self, code: KeyCode) -> Option<usize> {
+        for (i, switch) in self.switches.iter().enumerate() {
+            if switch.handles(code) {
+                return Some(i)
             }
         }
+        None
+    }
+
+    /// Looks-up the handler for a KeyCode and calls the handler with
+    /// the event.
+    ///
+    /// # Argument
+    /// `event` - The instance of the event to handle
+    pub fn call_event_handler(&mut self, event: KeyEvent) {
+        match self.get_switch_index(event.code) {
+            Some(i) => self.switches[i].handle_event(event, &self.options),
+            None => (),
+        };
+    }
+
+    /// Adjusts keyboard state given Event and calls a handler.
+    ///
+    /// # Argument
+    /// `event` - The instance of the event to record and handle
+    pub fn handle_event(&mut self, event: KeyEvent) {
+        match event.etype {
+            EventType::KeyDown => {
+                if !self.keys_down.contains(&event.code) {
+                    self.keys_down.insert(event.code);
+                    self.call_event_handler(event);
+                }
+            },
+            EventType::KeyUp => {
+                if self.keys_down.contains(&event.code) {
+                    self.keys_down.remove(&event.code);
+                    self.call_event_handler(event);
+                }
+            },
+            _ => ()
+        };
     }
 }
 
@@ -179,6 +214,15 @@ mod test {
 
     #[test]
     fn keyboard_create_OK() -> () {
-        Keyboard::new("resources/modelm");
+        let _ = Keyboard::new().load_config_yaml(r"switches:
+   -  keycode_regex: '49'
+      keydown_paths:
+        - spacebar.wav
+      keyup_paths:
+        - spacebar.wav
+   -  keycode_regex: '\d+'
+      keydown_paths:
+        - 1_.wav
+");
     }
 }

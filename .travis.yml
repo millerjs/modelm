@@ -3,8 +3,8 @@ os:
 sudo: false
 language: rust
 rust:
-  - nightly
-  - beta
+  # - nightly
+  # - beta
   - stable
 before_install:
   - brew update
