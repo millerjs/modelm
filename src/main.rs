@@ -16,6 +16,7 @@ use std::fs::File;
 use std::io::prelude::*;
 
 static DEFAULT_PATH: &'static str = "resources/modelm";
+static DEFAULT_CONFIG_PATH: &'static str = "config.yaml";
 
 /// Setup logging (cli arg overwrites env var for dtt crate)
 pub fn setup_logging(matches: &ArgMatches)
@@ -42,22 +43,21 @@ fn main() -> () {
         .author("Joshua Miller <jsmiller@uchicago.edu>")
         .about("Turns your computer into a mechanical keyboard emulator!")
         .arg(Arg::with_name("VOLUME")
-             .short("v")
+             .short("V")
              .long("volume")
              .help("Adjust the keyboard volume in range [0.0, 1.0]")
              .takes_value(true))
-        .arg(Arg::with_name("CLICKS")
-             .short("c")
-             .long("click-directory")
+        .arg(Arg::with_name("DIR")
+             .short("d")
+             .long("directory")
              .help("Specify the directory to load click sounds from")
              .takes_value(true))
         .arg(Arg::with_name("CONFIG")
-             .long("config")
+             .long("c")
              .help("Specify the config to parse click options from")
-             .takes_value(true)
-             .required(true))
+             .takes_value(true))
         .arg(Arg::with_name("DEBUG")
-             .short("d")
+             .short("v")
              .long("debug")
              .takes_value(false)
              .help("Debug output"))
@@ -74,11 +74,15 @@ fn main() -> () {
     setup_logging(&matches);
 
     // working directory
-    let dir = matches.value_of("CLICKS").unwrap_or(DEFAULT_PATH);
-    env::set_current_dir(&Path::new(&*dir)).expect(&*format!("Unable to work in dir {}", dir));
+    let dir = matches.value_of("DIR").unwrap_or(DEFAULT_PATH);
+
+    match env::set_current_dir(&Path::new(&*dir)) {
+        Ok(_) => (),
+        Err(error) => error!("Unable to work in dir {}: {:?}", dir, error),
+    }
 
     // config path
-    let config_path = matches.value_of("CONFIG").unwrap();
+    let config_path = matches.value_of("CONFIG").unwrap_or(DEFAULT_CONFIG_PATH);
 
     // volume
     let volume: f32 = matches.value_of("VOLUME").unwrap_or("1.0").parse()

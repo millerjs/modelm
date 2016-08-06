@@ -51,12 +51,14 @@ impl SwitchSound {
 macro_rules! play_random_sound {
     ($sounds: expr, $position: expr, $options: expr) => {
         {
-            let range = Range::new(0, $sounds.len());
-            let idx = range.ind_sample(&mut rand::thread_rng());
-            let sound = &mut $sounds[idx];
-            sound.sound.set_position($position);
-            debug!("Playing {}", sound.name);
-            sound.sound.play();
+            if $sounds.len() > 0 {
+                let range = Range::new(0, $sounds.len());
+                let idx = range.ind_sample(&mut rand::thread_rng());
+                let sound = &mut $sounds[idx];
+                sound.sound.set_position($position);
+                debug!("Playing {}", sound.name);
+                sound.sound.play();
+            }
         }
     };
 }
