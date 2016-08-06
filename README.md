@@ -115,4 +115,4 @@ sudo cargo run -- -v 0.5
 
 ### Credits
 
-Currently ships with [IBM sounds](https://webwit.nl/input/kbsim/) and [HHKB Pro 2 Topre sounds]( https://www.youtube.com/watch?v=9hXeG_YEkBs).
+Currently ships with [IBM sounds](https://webwit.nl/input/kbsim/) and [HHKB Pro 2 Topre]( https://www.youtube.com/watch?v=9hXeG_YEkBs) sounds.
