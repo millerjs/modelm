@@ -37,8 +37,8 @@ pub struct Keyboard {
 
 
 pub struct KeyboardOptions {
-    x_scale: f32,
-    volume: f32,
+    pub x_scale: f32,
+    pub volume: f32,
 }
 
 

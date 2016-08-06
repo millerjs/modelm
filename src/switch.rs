@@ -56,6 +56,7 @@ macro_rules! play_random_sound {
                 let idx = range.ind_sample(&mut rand::thread_rng());
                 let sound = &mut $sounds[idx];
                 sound.sound.set_position($position);
+                sound.sound.set_volume($options.volume);
                 debug!("Playing {}", sound.name);
                 sound.sound.play();
             }
@@ -94,12 +95,13 @@ impl Switch {
     }
 
     pub fn handle_event(&mut self, event: KeyEvent, options: &KeyboardOptions) {
+        let position = - (25.0 - event.code as f32) * options.x_scale / 300.0;
         match event.etype {
             EventType::KeyDown => {
-                play_random_sound!(self.sounds_keydown, self.position, options);
+                play_random_sound!(self.sounds_keydown, [position, 0.0, 1.0], options);
             },
             EventType::KeyUp => {
-                play_random_sound!(self.sounds_keyup, self.position, options);
+                play_random_sound!(self.sounds_keyup, [position, 0.0, 1.0], options);
             },
             _ => (),
         }
