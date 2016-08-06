@@ -97,7 +97,7 @@ impl Switch {
                 play_random_sound!(self.sounds_keydown, self.position, options);
             },
             EventType::KeyUp => {
-
+                play_random_sound!(self.sounds_keyup, self.position, options);
             },
             _ => (),
         }
