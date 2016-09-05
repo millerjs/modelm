@@ -1,0 +1,35 @@
+switches:
+
+  ## enter
+  -  keycode_regex: '36'
+     keydown_paths:
+       - enter_down_1.wav
+       - enter_down_2.wav
+
+     keyup_paths:
+       - enter_up_1.wav
+       - enter_up_2.wav
+
+  ## all other keys
+  -  keycode_regex: '\d+'
+     keydown_paths:
+       - down_1.wav
+       - down_2.wav
+       - down_3.wav
+       - down_4.wav
+       - down_5.wav
+       - down_6.wav
+       - down_7.wav
+       - down_8.wav
+       - down_9.wav
+
+     keyup_paths:
+       - up_1.wav
+       - up_2.wav
+       - up_3.wav
+       - up_4.wav
+       - up_5.wav
+       - up_6.wav
+       - up_7.wav
+       - up_8.wav
+       - up_9.wav

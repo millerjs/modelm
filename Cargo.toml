@@ -1,11 +1,15 @@
 [package]
 name = "modelm"
-version = "0.2.1"
+version = "1.0.0"
 authors = ["Joshua Miller <jsmiller@uchicago.edu>"]
 
 [dependencies]
-rand = "0.3"
 clap = "1.5.5"
+ears = { git = "https://github.com/jhasse/ears", rev = "2d012c78737c80fe09fb1f374386da1036b4f51d"}
+env_logger = "0.3"
 libc = "0.1"
 log = "0.3"
-ears = { git = "https://github.com/jhasse/ears", rev = "2d012c78737c80fe09fb1f374386da1036b4f51d"}
+rand = "0.3"
+regex = "0.1"
+yaml-rust = "*"
+quick-error = "*"

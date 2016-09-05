@@ -1,0 +1,17 @@
+switches:
+   -  keycode_regex: '49'
+      keydown_paths:
+        - spacebar.wav
+      keyup_paths:
+        - spacebar.wav
+   -  keycode_regex: '\d+'
+      keydown_paths:
+        - 1_.wav
+        - 2_.wav
+        - 3_.wav
+        - 4_.wav
+        - 5_.wav
+        - 6_.wav
+        - 7_.wav
+        - 8_.wav
+        - 9_.wav
