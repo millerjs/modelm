@@ -46,14 +46,14 @@ sudo ./modelm -x 5.0
 # Or less dramatic
 sudo ./modelm -x 0.5
 
-# Or reverse because you have your headphones on backward
+# Or reverse because you have your headphones on backward, silly
 sudo ./modelm -x'-1'
 ```
 
 #### Help output
 
 ```
-modelm 0.2.0
+modelm 0.3.0
 Joshua Miller <jsmiller@uchicago.edu>
 Turns your computer into a mechanical keyboard emulator!
 
@@ -66,11 +66,10 @@ FLAGS:
         --version    Prints version information
 
 OPTIONS:
-        --c <CONFIG>          Specify the config to parse click options from
+    -c, --config <CONFIG>     Specify the config to parse click options from
     -d, --directory <DIR>     Specify the directory to load click sounds from
     -V, --volume <VOLUME>     Adjust the keyboard volume in range [0.0, 1.0]
     -x, --x-scale <XSCALE>    Specify the pan amount for the positional sound of clicks. A decimal (default: 1.0).  The larger the value, the further apart the clicks will sound. A value of 0 turns off positional sound. A value < 0 reverses the directionality.
-
 ```
 
 #### Example config file
@@ -98,12 +97,15 @@ switches:
        - up_2.wav
 ```
 
+The handler for key events will pick the first `keycode_regex` that
+matches an entry in the ordered list `switches` in the config.
+
 ### Installation from source
 
 First, install [Rust](https://github.com/rust-lang/rustup) and [Cargo](https://crates.io/).
 
 ```
-git clone git@github.com:millerjs/modelm.git
+git clone https://github.com/millerjs/modelm.git
 cd modelm
 cargo run
 ```

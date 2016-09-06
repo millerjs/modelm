@@ -1,6 +1,6 @@
 [package]
 name = "modelm"
-version = "1.0.0"
+version = "0.3.0"
 authors = ["Joshua Miller <jsmiller@uchicago.edu>"]
 
 [dependencies]
@@ -11,5 +11,5 @@ libc = "0.1"
 log = "0.3"
 rand = "0.3"
 regex = "0.1"
-yaml-rust = "*"
-quick-error = "*"
+yaml-rust = "0.3.3"
+quick-error = "1.1.0"
