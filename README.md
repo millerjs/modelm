@@ -7,6 +7,8 @@ A OSX **Mechanical keyboard audio simulator** for your Mac keyboard written in [
 
 Inspired by the [IBM Model M Keyboard](https://en.wikipedia.org/wiki/Model_M_keyboard) and a disproportionate love of clicky keyboards over non clicky keyboards, this is a simple program to simulate the Model M by providing audible keystroke feedback.
 
+For a linux clone, see [modelm-linux](https://github.com/mlsteele/modelm-linux).
+
 ## Features
 To provide audible feedback for your keystrokes, `modelm` hooks into OSX Quartz Events and must be run as `root` OR from a terminal with accessibility features enabled.
 
