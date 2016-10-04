@@ -27,11 +27,11 @@ brew install openal-soft libsndfile
 
 ### Running a pre-compiled binary
 
-To run the compile binary, download the tar [here](https://github.com/millerjs/modelm/releases/download/0.1.0/modelm_v0.1.0_OSX.tar.gz),
+To run the compile binary, download the tar [here](https://github.com/millerjs/modelm/releases/download/v0.3.0/modelm_v0.3.0.tar.gz),
 ```bash
-tar -zxf modelm_v0.1.0_OSX.tar.gz
-cd modelm_v0.1.0
-sudo ./modelm
+tar -zxf modelm_v0.3.0.tar.gz
+cd modelm_v0.3.0
+./modelm -d resources/modelm
 ```
 
 ### Usage
@@ -53,7 +53,7 @@ sudo ./modelm -x'-1'
 #### Help output
 
 ```
-modelm 0.2.0
+modelm 0.3.0
 Joshua Miller <jsmiller@uchicago.edu>
 Turns your computer into a mechanical keyboard emulator!
 
@@ -66,11 +66,10 @@ FLAGS:
         --version    Prints version information
 
 OPTIONS:
-        --c <CONFIG>          Specify the config to parse click options from
+    -c, --config <CONFIG>     Specify the config to parse click options from
     -d, --directory <DIR>     Specify the directory to load click sounds from
     -V, --volume <VOLUME>     Adjust the keyboard volume in range [0.0, 1.0]
     -x, --x-scale <XSCALE>    Specify the pan amount for the positional sound of clicks. A decimal (default: 1.0).  The larger the value, the further apart the clicks will sound. A value of 0 turns off positional sound. A value < 0 reverses the directionality.
-
 ```
 
 #### Example config file
@@ -103,7 +102,7 @@ switches:
 First, install [Rust](https://github.com/rust-lang/rustup) and [Cargo](https://crates.io/).
 
 ```
-git clone git@github.com:millerjs/modelm.git
+git clone https://github.com/millerjs/modelm.git
 cd modelm
 cargo run
 ```
@@ -112,7 +111,7 @@ cargo run
 
 You can pass options through cargo with a `--`, e.g. to change the volume:
 ```
-sudo cargo run -- -v 0.5
+sudo cargo run -- -V 0.5
 ```
 
 ### Credits
