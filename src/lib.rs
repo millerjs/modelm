@@ -19,4 +19,6 @@ pub mod ffi;
 pub mod switch;
 pub mod errors;
 
+pub static VERSION: &'static str = "0.3.0";
+
 static DEFAULT_SOUND_FILE_REGEX: &'static str = r"\.(wav|mp3)";

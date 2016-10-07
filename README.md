@@ -46,7 +46,7 @@ sudo ./modelm -x 5.0
 # Or less dramatic
 sudo ./modelm -x 0.5
 
-# Or reverse because you have your headphones on backward
+# Or reverse because you have your headphones on backward, silly
 sudo ./modelm -x'-1'
 ```
 
@@ -96,6 +96,9 @@ switches:
        - up_1.wav
        - up_2.wav
 ```
+
+The handler for key events will pick the first `keycode_regex` that
+matches an entry in the ordered list `switches` in the config.
 
 ### Installation from source
 

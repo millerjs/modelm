@@ -18,7 +18,7 @@ use std::io::prelude::*;
 static DEFAULT_PATH: &'static str = "resources/modelm";
 static DEFAULT_CONFIG_PATH: &'static str = "config.yaml";
 
-/// Setup logging (cli arg overwrites env var for dtt crate)
+/// Setup logging (cli arg overwrites env var for modelm crate)
 pub fn setup_logging(matches: &ArgMatches)
 {
     let rust_log = env::var("RUST_LOG").unwrap_or("".to_owned());
@@ -39,7 +39,7 @@ fn main() -> () {
     ears::init();
 
     let matches = App::new("modelm")
-        .version("0.2.0")
+        .version(modelm::VERSION)
         .author("Joshua Miller <jsmiller@uchicago.edu>")
         .about("Turns your computer into a mechanical keyboard emulator!")
         .arg(Arg::with_name("VOLUME")
