@@ -1,19 +1,31 @@
 os:
   - osx
-sudo: false
+  - linux
+
 language: rust
+sudo: required
+
 rust:
   # - nightly
   # - beta
   - stable
+
 before_install:
-  - brew update
-  - brew install openal-soft libsndfile
-before_script:
   - |
-    pip install 'travis-cargo<0.2' --user &&
-    export PATH=$HOME/.local/bin:$PATH
+    ### Target dependent setup
+
+    # OSX
+    if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+       brew update
+       brew uninstall libjpeg libpng libtiff --ignore-dependencies || true
+       brew install openal-soft libsndfile
+    fi
+
+    # Linux
+    if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+        sudo apt-get update
+        sudo apt-get install -y libopenal-dev libsndfile1-dev
+    fi
+
 script:
-  - |
-    cargo build
-    cargo test
+  - cargo build
