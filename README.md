@@ -1,25 +1,41 @@
 # modelm
 [![Build Status](https://travis-ci.org/millerjs/modelm.svg?branch=master)](https://travis-ci.org/millerjs/modelm)
 
-A OSX **Mechanical keyboard audio simulator** for your Mac keyboard written in [Rust](https://www.rust-lang.org/).
+A **Mechanical keyboard audio simulator** for your keyboard written in [Rust](https://www.rust-lang.org/).
 
 > *Get yourself clickity-clacking.*
 
 Inspired by the [IBM Model M Keyboard](https://en.wikipedia.org/wiki/Model_M_keyboard) and a disproportionate love of clicky keyboards over non clicky keyboards, this is a simple program to simulate the Model M by providing audible keystroke feedback.
 
-For a linux clone, see [modelm-linux](https://github.com/mlsteele/modelm-linux).
-
 ## Features
-To provide audible feedback for your keystrokes, `modelm` hooks into OSX Quartz Events and must be run as `root` OR from a terminal with accessibility features enabled.
+To provide audible feedback for your keystrokes, `modelm` hooks into OSX Quartz Events (on OSX) or your `/dev/input` keyboard device and must be run as `root`(or from a terminal with accessibility features enabled on OSX).
 
 * **Stereo sounds** - Keys on the left sound like keys on the left. Keys on the right sound like Keys on the right.
-* **Customizable resource loading** - You can pick your favorite clickity-clacks.  Just point `modelm` to a directory with sound bites and a config file.
+* **Custom resource loading** - You can pick your favorite clickity-clacks.  Just point `modelm` to a directory with sound bites and a config file.
 
 ## Requirements
 
 Install OpenAL audio dependency.
+
+### OSX
+
 ```bash
+brew update
 brew install openal-soft libsndfile
+```
+### Debian/Ubuntu
+
+```bash
+apt-get update
+apt-get install libopenal-dev libsndfile1-dev
+```
+
+### Arch
+
+You may also need pulseaudio as shown
+
+```bash
+pacman -S openal libsndfile pulseaudio-alsa
 ```
 
 ## Installation
@@ -27,11 +43,23 @@ brew install openal-soft libsndfile
 
 ### Running a pre-compiled binary
 
-To run the compile binary, download the tar [here](https://github.com/millerjs/modelm/releases/download/v0.3.0/modelm_v0.3.0.tar.gz),
+To run the compiled
+binary,
+[download the latest release](https://github.com/millerjs/modelm/releases/latest) and
+simply run the following from within the extracted tarball
+
 ```bash
-tar -zxf modelm_v0.3.0.tar.gz
-cd modelm_v0.3.0
 ./modelm -d resources/modelm
+```
+
+### Installation from source
+
+First, install [Rust](https://github.com/rust-lang/rustup) and [Cargo](https://crates.io/).
+
+```
+git clone https://github.com/millerjs/modelm.git
+cd modelm
+cargo run --release
 ```
 
 ### Usage
@@ -46,9 +74,16 @@ sudo ./modelm -x 5.0
 # Or less dramatic
 sudo ./modelm -x 0.5
 
-# Or reverse because you have your headphones on backward
+# Or reverse because you have your headphones on backward, silly
 sudo ./modelm -x'-1'
 ```
+
+#### Note: Linux usage
+
+Currently, `modelm` defaults to reading from `/dev/input/event0`, but
+you can specify which event device to read at runtimefrom by setting the
+`MODELM_INPUT_DEVICE` environment variable to a new path.
+
 
 #### Help output
 
@@ -97,21 +132,11 @@ switches:
        - up_2.wav
 ```
 
-### Installation from source
-
-First, install [Rust](https://github.com/rust-lang/rustup) and [Cargo](https://crates.io/).
-
-```
-git clone https://github.com/millerjs/modelm.git
-cd modelm
-cargo run
-```
-
 ### Options
 
 You can pass options through cargo with a `--`, e.g. to change the volume:
 ```
-sudo cargo run -- -V 0.5
+sudo cargo run --release -- -V 0.5
 ```
 
 ### Credits

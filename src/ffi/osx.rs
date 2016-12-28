@@ -5,22 +5,7 @@
 
 use libc;
 use std::sync::mpsc::Sender;
-pub type KeyCode = u16;
-
-#[derive(Debug)]
-#[repr(C)]
-pub enum EventType {
-    KeyDown,
-    KeyUp,
-    FlagsChanged,
-}
-
-#[derive(Debug)]
-#[repr(C)]
-pub struct KeyEvent {
-    pub etype: EventType,
-    pub code: KeyCode,
-}
+use super::types::{EventType, KeyEvent};
 
 // Opaque Pointer Types
 pub type Pointer = *mut libc::c_void;
@@ -38,7 +23,8 @@ pub type CGEventType = u32;
 pub type CGKeyCode = u16;
 
 // Callback Type
-pub type CGEventTapCallBack = extern "C" fn(Pointer, CGEventMask, CGEventRef, &Sender<KeyEvent>) -> CGEventRef;
+pub type CGEventTapCallBack = extern "C"
+    fn(Pointer, CGEventMask, CGEventRef, &Sender<KeyEvent>) -> CGEventRef;
 
 // Constants
 pub const kCGEventKeyDown: CGEventType = 10;
@@ -53,7 +39,7 @@ pub mod ext_quartz {
     use std::sync::mpsc::Sender;
 
     // Import types from super
-    use super::KeyEvent;
+    use super::super::types::KeyEvent;
     use super::Pointer;
     use super::CGEventRef;
     use super::CFMachPortRef;
@@ -165,7 +151,7 @@ pub mod ext_quartz {
 ///  This callback will be registered to be invoked from the run loop
 ///  to which the event tap is added as a source.
 #[no_mangle]
-#[allow(unused_variables)]
+#[allow(unused_variables, private_no_mangle_fns)]
 pub extern fn callback(proxy: Pointer, etype: CGEventMask, event: CGEventRef, channel: &Sender<KeyEvent>)
                        -> CGEventRef {
     unsafe {
@@ -194,14 +180,14 @@ pub fn CGEventMaskBit(eventType: u32) -> CGEventMask {
 }
 
 /// Safe wrapper around CFRunLoopRun
-pub fn CFRunLoopRun() {
+pub fn start_listener() {
     unsafe {
         ext_quartz::CFRunLoopRun();
     }
 }
 
 /// Registeres an event tap
-pub fn register_event_tap(tx: &Sender<KeyEvent>) {
+pub fn register_listener(tx: &Sender<KeyEvent>) {
     let mask = CGEventMaskBit(kCGEventKeyDown)
         | CGEventMaskBit(kCGEventKeyUp)
         | CGEventMaskBit(kCGEventFlagsChanged);

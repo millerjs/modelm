@@ -13,9 +13,8 @@
 //! ```
 
 use ::DEFAULT_SOUND_FILE_REGEX;
-use ffi::CFRunLoopRun;
-use ffi::register_event_tap;
-use ffi::{EventType, KeyCode, KeyEvent};
+use ffi::{register_listener, start_listener};
+use ffi::types::{EventType, KeyCode, KeyEvent};
 use regex::Regex;
 use std::collections::HashSet;
 use std::fs::read_dir;
@@ -144,16 +143,21 @@ impl Keyboard {
     /// ```
     pub fn listen(&mut self) {
         let (tx, rx) = channel();
+
+        // create listener thread
         thread::spawn(move || {
-            register_event_tap(&tx);
+            register_listener(&tx);
             info!("Running event listener...");
             info!("Press ^C to exit.");
-            CFRunLoopRun();
+            start_listener(&tx);
         });
 
+        // poll channel for events
         loop {
-            let event = rx.recv().unwrap();
-            self.handle_event(event);
+            match rx.recv() {
+                Ok(event) => self.handle_event(event),
+                Err(err) => return info!("Channel to listener closed, {:}", err),
+            }
         }
     }
 

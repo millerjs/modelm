@@ -6,7 +6,7 @@
 use rand;
 use ears::AudioController;
 use ears::Sound;
-use ffi::{KeyEvent, KeyCode, EventType};
+use ffi::types::{KeyEvent, KeyCode, EventType};
 use regex::Regex;
 use rand::distributions::IndependentSample;
 use rand::distributions::Range;
@@ -15,6 +15,10 @@ use std::path::Path;
 use yaml_rust;
 use yaml_rust::Yaml;
 use ::errors::KeyboardError;
+
+#[cfg(target_os = "macos")] const MIDDLE: f32 = 25.0;
+#[cfg(target_os = "linux")] const MIDDLE: f32 = 50.0;
+
 
 pub struct SwitchSound {
     sound: Sound,
@@ -95,7 +99,7 @@ impl Switch {
     }
 
     pub fn handle_event(&mut self, event: KeyEvent, options: &KeyboardOptions) {
-        let position = - (25.0 - event.code as f32) * options.x_scale / 300.0;
+        let position = - (MIDDLE - event.code as f32) * options.x_scale / 300.0;
         match event.etype {
             EventType::KeyDown => {
                 play_random_sound!(self.sounds_keydown, [position, 0.0, 1.0], options);

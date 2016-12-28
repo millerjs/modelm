@@ -1,5 +1,5 @@
-//! Small OSX commandline app that uses your keyboard to
-//! emulate mechanical keyboard audio.
+//! Small commandline app that uses your keyboard to emulate
+//! mechanical keyboard audio.
 
 #[macro_use]
 extern crate log;
@@ -34,9 +34,8 @@ pub fn setup_logging(matches: &ArgMatches)
     debug!("Set log level to {}", log_level);
 }
 
-
-fn main() -> () {
-    ears::init();
+fn main() {
+    assert!(ears::init());
 
     let matches = App::new("modelm")
         .version("0.2.0")
@@ -111,4 +110,5 @@ fn main() -> () {
         Ok(mut keyboard) => keyboard.listen(),
         Err(error) => error!("Unable to initialize keyboard: {:?}", error),
     };
+
 }
