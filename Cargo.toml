@@ -1,6 +1,6 @@
 [package]
 name = "modelm"
-version = "1.0.0"
+version = "0.4.1"
 authors = ["Joshua Miller <jsmiller@uchicago.edu>"]
 
 [dependencies]
