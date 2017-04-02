@@ -38,15 +38,17 @@ pub struct Keyboard {
 pub struct KeyboardOptions {
     pub x_scale: f32,
     pub volume: f32,
+    pub modifier_keys: bool,
 }
 
 
-impl KeyboardOptions {
-    pub fn default() -> Self
+impl Default for KeyboardOptions {
+    fn default() -> Self
     {
         KeyboardOptions {
             x_scale: 1.0,
             volume: 1.0,
+            modifier_keys: false,
         }
     }
 }
@@ -64,6 +66,14 @@ impl Keyboard {
             switches: vec![],
             sound_file_regex: Regex::new(DEFAULT_SOUND_FILE_REGEX).unwrap(),
         }
+    }
+
+    /// Default constructor for Keyboard
+    ///
+    /// Create a new Keyboard with default members
+    pub fn with_options(options: KeyboardOptions) -> Keyboard
+    {
+        Keyboard { options: options, .. Keyboard::new() }
     }
 
     pub fn load_config_yaml(mut self, config: &str) -> Result<Keyboard, KeyboardError>
@@ -204,7 +214,16 @@ impl Keyboard {
                     self.call_event_handler(event);
                 }
             },
-            _ => ()
+            EventType::FlagsChanged if self.options.modifier_keys => {
+                if !self.keys_down.contains(&event.code) {
+                    self.keys_down.insert(event.code);
+                    self.call_event_handler(KeyEvent {etype: EventType::KeyDown, .. event});
+                } else {
+                    self.keys_down.remove(&event.code);
+                    self.call_event_handler(KeyEvent {etype: EventType::KeyUp, .. event});
+                }
+            },
+            _ => (),
         };
     }
 }

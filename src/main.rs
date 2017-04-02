@@ -9,7 +9,7 @@ extern crate env_logger;
 extern crate clap;
 
 use clap::{Arg, App, ArgMatches};
-use modelm::keyboard::Keyboard;
+use modelm::keyboard::{Keyboard, KeyboardOptions};
 use std::env;
 use std::path::Path;
 use std::fs::File;
@@ -35,10 +35,12 @@ pub fn setup_logging(matches: &ArgMatches)
 }
 
 fn main() {
-    assert!(ears::init());
+    if let Err(error) = ears::init() {
+        return error!("{}", error)
+    }
 
     let matches = App::new("modelm")
-        .version("0.2.0")
+        .version("0.5.0")
         .author("Joshua Miller <jsmiller@uchicago.edu>")
         .about("Turns your computer into a mechanical keyboard emulator!")
         .arg(Arg::with_name("VOLUME")
@@ -61,6 +63,10 @@ fn main() {
              .long("debug")
              .takes_value(false)
              .help("Debug output"))
+        .arg(Arg::with_name("MODIFIER_KEYS")
+             .short("m")
+             .long("with-modifier-keys")
+             .help("Don't exclude modifier keys (control, alt, shift, etc.)"))
         .arg(Arg::with_name("XSCALE")
              .short("x")
              .long("x-scale")
@@ -96,13 +102,18 @@ fn main() {
     let mut config = String::new();
     let mut config_file = File::open(&config_path)
         .expect(&*format!("unable to open: {}", config_path));
+
     config_file.read_to_string(&mut config)
         .expect(&*format!("unable to read: {}", config_path));
 
     // Create a keyboard
-    let keyboard = Keyboard::new()
-        .set_volume(volume)
-        .set_x_scale(x_scale)
+    let options = KeyboardOptions {
+        x_scale: x_scale,
+        volume: volume,
+        modifier_keys: matches.is_present("MODIFIER_KEYS"),
+    };
+
+    let keyboard = Keyboard::with_options(options)
         .load_config_yaml(&*config);
 
     // Run the keyboard

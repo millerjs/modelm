@@ -11,7 +11,6 @@ use super::types::{EventType, KeyEvent};
 pub type Pointer = *mut libc::c_void;
 pub type CGEventRef = Pointer;
 pub type CFMachPortRef = Pointer;
-pub type CFRunLoopSourceRef = Pointer;
 
 // Integer Types
 pub type CGEventField = u32;
