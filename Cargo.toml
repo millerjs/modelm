@@ -5,7 +5,7 @@ authors = ["Joshua Miller <jsmiller@uchicago.edu>"]
 
 [dependencies]
 clap = "1.5.5"
-ears = { git = "https://github.com/jhasse/ears", rev = "2d012c78737c80fe09fb1f374386da1036b4f51d"}
+ears = { git = "https://github.com/jhasse/ears", rev = "9fa9f95b09777e8e17422da9fedcb4e7fb19fc22"}
 env_logger = "0.3"
 libc = "0.1"
 log = "0.3"

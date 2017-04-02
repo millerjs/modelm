@@ -37,9 +37,8 @@ pub struct Switch {
 impl SwitchSound {
     fn from_path(path: &Path) -> Result<SwitchSound, KeyboardError>
     {
-        let sound = try!(path.to_str()
-            .and_then(|p| Sound::new(p))
-            .ok_or(format!("Unable to load sound: {:?}", path)));
+        let path_str = path.to_str().ok_or(format!("Unable to load sound: {:?}", path))?;
+        let sound = Sound::new(path_str)?;
 
         let name = try!(path.file_name()
             .ok_or(format!("Unable to parse filename: {:?}", path))
