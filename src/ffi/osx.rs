@@ -32,6 +32,7 @@ pub const kCGEventFlagsChanged: CGEventType = 12;
 pub const kCGSessionEventTap: CGEventTapLocation = 1;
 pub const kCGHeadInsertEventTap: CGEventTapPlacement = 0;
 pub const kCGKeyboardEventKeycode: CGEventField = 9;
+pub const kCGTapDisabledByTimeout: CGEventType = 0xFFFFFFFE;
 
 pub mod ext_quartz {
     extern crate libc;
@@ -160,6 +161,11 @@ pub extern fn callback(proxy: Pointer, etype: CGEventMask, event: CGEventRef, ch
                 kCGEventKeyDown => EventType::KeyDown,
                 kCGEventKeyUp => EventType::KeyUp,
                 kCGEventFlagsChanged => EventType::FlagsChanged,
+                kCGTapDisabledByTimeout => {
+                    warn!("Quartz event tap disabled because of timeout; attempting to reregister.");
+                    register_listener(channel);
+                    return event;
+                },
                 _ => {
                     error!("Received unknown EventType: {:}", etype);
                     return event;
